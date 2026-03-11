@@ -22,7 +22,16 @@
             background: rgb(233, 199, 4);
             border: none;
             border-radius: 5px;
-        }
+            }
+            button:hover {
+                transform: scale(1.05);
+                transition: transform 0.2s;
+            }
+            select:hover {
+                transform: scale(1.05);
+                transition: transform 0.2s;
+            }
+        
         .selectionner {
             color :blue;
         }
@@ -63,10 +72,11 @@
         <option value="3">1 point/figure</option>
         <option value="4">Réservation</option>
         <option value="5">Rase-board</option>
-        <option value="6">+3 fermés</option>
+        <option value="6">+4 fermés</option>
         <option value="7">Réservation/figure</option>
     </select>
     <button id="deselectionner" onclick="deSelectionner()">Désélectionner</button>
+    <button id="erreur" onclick="document.querySelectorAll('td').forEach(td => { if (td.classList.contains('selectionner')) { td.textContent=' '; } });">Retirer des points</button>
     </div>
     <div class="items">
         <input style="height:50px; width:50px; background: none; border: none; font-size: 50px; font-weight: bold;" value="X" id="skin_j2" >
@@ -98,6 +108,8 @@
         });
         genererGrille();
         function genererGrille() {
+            nb_figure_j1 = 0;
+            nb_figure_j2 = 0;
             document.getElementById('grille').innerHTML = "";
             const ligne = document.getElementById('ligne').value;
             const colonne = document.getElementById('colonne').value;
@@ -270,7 +282,7 @@ for (let td of document.querySelectorAll('td')) {
                 }
             
                 else {
-                    alert("Les points ne forment pas une figure en zigzag");
+                    alert("Les points ne forment 1 point/figure");
                 }
             }
             else if (document.getElementById('selectionner').value == "4"){
@@ -306,18 +318,18 @@ for (let td of document.querySelectorAll('td')) {
                 if (est_troisfermés(Array.from(cases))){
                     figure_realise(Array.from(cases), firstContent);
                     if (firstContent == skin_j2){
-                        j1-=3;
-                        document.getElementById('coups-j2').textContent = parseInt(document.getElementById('coups-j2').textContent) + 3;
+                        j1-=4;
+                        document.getElementById('coups-j2').textContent = parseInt(document.getElementById('coups-j2').textContent) + 4;
                     }
                     else if (firstContent == skin_j1){
-                        j2-=3;
-                        document.getElementById('coups-j1').textContent = parseInt(document.getElementById('coups-j1').textContent) + 3;
+                        j2-=4;
+                        document.getElementById('coups-j1').textContent = parseInt(document.getElementById('coups-j1').textContent) + 4;
                     }
-                    fermés_restants=3;
+                    fermés_restants=4;
                 }
             
                 else {
-                    alert("Les points ne forment pas la figure des +3 fermés");
+                    alert("Les points ne forment pas la figure des +4 fermés");
                 }
             }
             if (document.getElementById('selectionner').value == "7"){
@@ -499,14 +511,15 @@ function reservationClick(e){
     }
 }
 function est_4_point_en_zigzag(cases){
-    if(cases.length !== 4) return false;
+    if(cases.length !== 5) return false;
 
     // forme de base
     let baseShape = [
         [0,0],
         [1,1],
         [2,0],
-        [3,1]
+        [3,1],
+        [4,0]
     ];
 
     function getCoords(td){
