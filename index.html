@@ -56,6 +56,8 @@
         <input style="height:50px; width:50px; background: none; border: none; font-size: 50px; font-weight: bold;" value="O" id="skin_j1">
         <p style="font-size: 30px;">Coups restants : </p>
         <p id="coups-j1"style="font-size: 40px;">1</p>
+        <p style="font-size: 30px; display:none" id="t_reservations-j1">Réservations restantes : </p>
+        <p id="reservations-j1"style="font-size: 40px; display:none">0</p>
     </div>
     <div class="items">
     <h1>Jeu de la Perm</h1>
@@ -74,6 +76,8 @@
         <option value="5">Rase-board</option>
         <option value="6">+4 fermés</option>
         <option value="7">Réservation/figure</option>
+        <option value="8">Destruction</option>
+        <option value="9">Sacrifice pour ouverture</option>
     </select>
     <button id="deselectionner" onclick="deSelectionner()">Désélectionner</button>
     <button id="erreur" onclick="document.querySelectorAll('td').forEach(td => { if (td.classList.contains('selectionner')) { td.textContent=' '; } });">Retirer des points</button>
@@ -82,6 +86,8 @@
         <input style="height:50px; width:50px; background: none; border: none; font-size: 50px; font-weight: bold;" value="X" id="skin_j2" >
         <p style="font-size: 30px;">Coups restants :</p>
         <p id="coups-j2"style="font-size: 40px;">0</p>
+        <p style="font-size: 30px; display:none" id="t_reservations-j2">Réservations restantes : </p>
+        <p id="reservations-j2"style="font-size: 40px; display:none">0</p>
     </div>
 </div>
     <script>
@@ -100,6 +106,9 @@
         let droit_1pfigure_j2=true;
         let skin_j1 = document.getElementById('skin_j1').value;
         let skin_j2 = document.getElementById('skin_j2').value;
+        let destruction=0
+        let joueurSacrifice = null;
+        let ouverture=0;
         document.getElementById('skin_j1').addEventListener('input', function() {
             skin_j1 = this.value;
         });
@@ -289,6 +298,7 @@ for (let td of document.querySelectorAll('td')) {
                 if (est_reservation(Array.from(cases))){
                     figure_realise(Array.from(cases), firstContent);
                     joueurReservation = firstContent;
+                    
                     for (let td of document.querySelectorAll('td')) {
                     td.removeEventListener('click', jouerClick);
                 }
@@ -296,6 +306,17 @@ for (let td of document.querySelectorAll('td')) {
                     td.addEventListener('click', reservationClick);
                 }
                 nb_resa=2*est_reservation(Array.from(cases));
+
+                if (joueurReservation===skin_j1){
+        document.getElementById('reservations-j1').style.display = 'block';
+        document.getElementById('t_reservations-j1').style.display = 'block';
+        document.getElementById('reservations-j1').textContent = nb_resa;
+    }
+    else if (joueurReservation===skin_j2){
+        document.getElementById('reservations-j2').style.display = 'block';
+        document.getElementById('t_reservations-j2').style.display = 'block';
+        document.getElementById('reservations-j2').textContent = nb_resa;
+    }
                 }
             
                 else {
@@ -336,6 +357,8 @@ for (let td of document.querySelectorAll('td')) {
                 if (est_reservation_fig(Array.from(cases))){
                     figure_realise(Array.from(cases), firstContent);
                     joueurReservation = firstContent;
+                    
+                    
                     for (let td of document.querySelectorAll('td')) {
                     td.removeEventListener('click', jouerClick);
                 }
@@ -348,14 +371,55 @@ for (let td of document.querySelectorAll('td')) {
                     else if (firstContent == skin_j1){
                         nb_resa=nb_figure_j2;
                     }
+                    if (joueurReservation===skin_j1){
+        document.getElementById('reservations-j1').style.display = 'block';
+        document.getElementById('t_reservations-j1').style.display = 'block';
+        document.getElementById('reservations-j1').textContent = nb_resa;
+    }
+    else if (joueurReservation===skin_j2){
+        document.getElementById('reservations-j2').style.display = 'block';
+        document.getElementById('t_reservations-j2').style.display = 'block';
+        document.getElementById('reservations-j2').textContent = nb_resa;
+    }
                 }
             
                 else {
-                    alert("Les points ne forment pas une réservation");
+                    alert("Les points ne forment pas une réservation/figure");
                 }
             }
-
-
+            if (document.getElementById('selectionner').value == "8"){
+                if (est_destruction(Array.from(cases))){
+                    figure_realise(Array.from(cases), firstContent);
+                    destruction=0;
+                    for (let td of document.querySelectorAll('td')) {
+                    td.removeEventListener('click', jouerClick);
+                }
+                    for (let td of document.querySelectorAll('td')) {
+                    td.addEventListener('click', destructionClick);
+                }
+                }
+            
+                else {
+                    alert("Les points ne forment pas une figure de destruction");
+                }
+            }
+            if (document.getElementById('selectionner').value == "9"){
+                if (est_sacrifice_ouverture(Array.from(cases))){
+                    figure_realise(Array.from(cases), firstContent);
+                    destruction=0;
+                    joueurSacrifice = firstContent;
+                    for (let td of document.querySelectorAll('td')) {
+                    td.removeEventListener('click', jouerClick);
+                }
+                    for (let td of document.querySelectorAll('td')) {
+                    td.addEventListener('click', sacrificeClick);
+                }
+                }
+            
+                else {
+                    alert("Les points ne forment pas une figure de sacrifice pour ouverture");
+                }
+            }
         document.getElementById('selectionner').value = "";}
     
 
@@ -490,7 +554,8 @@ function transformationClick(e){
     }
 }
 function reservationClick(e){
-    if (e.currentTarget.textContent === " " && e.currentTarget.style.backgroundColor !== "blue" && e.currentTarget.style.backgroundColor !== "gold"){
+    
+    if (e.currentTarget.textContent === " " && e.currentTarget.style.backgroundColor !== "purple" && e.currentTarget.style.backgroundColor !== "gold"){
         if (joueurReservation === skin_j2){
             e.currentTarget.style.backgroundColor = "purple";
         }
@@ -499,6 +564,12 @@ function reservationClick(e){
         }
         if (reservation < nb_resa){
             reservation++;
+            if (joueurReservation === skin_j1){
+            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
+            }
+            else if (joueurReservation === skin_j2){
+                document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
+            }
         }
         else {
            for (let td of document.querySelectorAll('td')){
@@ -506,6 +577,75 @@ function reservationClick(e){
             td.addEventListener('click', jouerClick);
         }
         reservation=1;
+        if (joueurReservation === skin_j1){
+            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
+            setTimeout(() => {
+                document.getElementById("reservations-j1").style.display = 'none';
+                document.getElementById("t_reservations-j1").style.display = 'none';
+            }, 500);
+        }
+        else if (joueurReservation === skin_j2){
+            document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
+            setTimeout(() => {
+                document.getElementById("reservations-j2").style.display = 'none';
+                document.getElementById("t_reservations-j2").style.display = 'none';
+            }, 500);
+        }
+    }
+    }
+}
+function destructionClick(e){
+    if (!(e.currentTarget.textContent === " ")) {
+    destruction2(e.currentTarget);
+    if (destruction===1){
+        for (let td of document.querySelectorAll('td')){
+            td.removeEventListener('click', destructionClick);
+            td.addEventListener('click', jouerClick);
+        }
+        destruction=0;
+    }
+    else {
+        destruction++;
+    }
+}}
+function destruction2(td){
+    td.textContent = " ";
+    td.classList.remove("utilisé");
+    setTimeout(() => {
+        td.classList.remove("selectionner");
+    }, 1);
+}
+function sacrificeClick(e){
+    if (e.currentTarget.textContent === joueurSacrifice) {
+    destruction2(e.currentTarget);
+    if (destruction===1){
+        for (let td of document.querySelectorAll('td')){
+            td.removeEventListener('click', sacrificeClick);
+            td.addEventListener('click', ouvertureClick);
+        }
+        destruction=0;
+    }
+    else {
+        destruction++;
+    }
+}
+else {
+    alert("Vous devez sacrifier un point vous appartenant");
+}
+}
+function ouvertureClick(e){
+    if (e.currentTarget.textContent === joueurSacrifice) {
+        e.currentTarget.classList.remove("utilisé");
+        if (ouverture===2){
+        for (let td of document.querySelectorAll('td')){
+            td.removeEventListener('click', ouvertureClick);
+            td.addEventListener('click', jouerClick);
+        }
+        deSelectionner();
+        joueurSacrifice = null;
+        }
+        else {
+            ouverture++;
         }
         
     }
@@ -713,6 +853,120 @@ function est_reservation_fig(cases){
     let baseShape = [
         [0,0],
         [0,1]
+    ];
+
+    function getCoords(td){
+        const tr = td.parentElement;
+        const table = tr.parentElement;
+        return {
+            row: Array.from(table.children).indexOf(tr),
+            col: Array.from(tr.children).indexOf(td)
+        };
+    }
+
+    let coords = cases.map(c => {
+        let p = getCoords(c);
+        return [p.row, p.col];
+    });
+
+    function normalize(shape){
+        let minR = Math.min(...shape.map(p=>p[0]));
+        let minC = Math.min(...shape.map(p=>p[1]));
+        return shape
+            .map(p=>[p[0]-minR, p[1]-minC])
+            .sort((a,b)=> a[0]-b[0] || a[1]-b[1]);
+    }
+
+    function rotate(shape){
+        return shape.map(([r,c]) => [c, -r]);
+    }
+
+    function mirror(shape){
+        return shape.map(([r,c]) => [r, -c]);
+    }
+
+    function sameShape(a,b){
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    let target = normalize(coords);
+
+    let variants = [];
+    let shape = baseShape;
+
+    for(let i=0;i<4;i++){
+        variants.push(normalize(shape));
+        variants.push(normalize(mirror(shape)));
+        shape = rotate(shape);
+    }
+
+    return variants.some(v => sameShape(v,target));
+}
+function est_destruction(cases){
+    if(cases.length !== 4) return false;
+
+    // forme de base
+    let baseShape = [
+        [0,0],
+        [1,0],
+        [-1,0],
+        [0,1]
+    ];
+
+    function getCoords(td){
+        const tr = td.parentElement;
+        const table = tr.parentElement;
+        return {
+            row: Array.from(table.children).indexOf(tr),
+            col: Array.from(tr.children).indexOf(td)
+        };
+    }
+
+    let coords = cases.map(c => {
+        let p = getCoords(c);
+        return [p.row, p.col];
+    });
+
+    function normalize(shape){
+        let minR = Math.min(...shape.map(p=>p[0]));
+        let minC = Math.min(...shape.map(p=>p[1]));
+        return shape
+            .map(p=>[p[0]-minR, p[1]-minC])
+            .sort((a,b)=> a[0]-b[0] || a[1]-b[1]);
+    }
+
+    function rotate(shape){
+        return shape.map(([r,c]) => [c, -r]);
+    }
+
+    function mirror(shape){
+        return shape.map(([r,c]) => [r, -c]);
+    }
+
+    function sameShape(a,b){
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    let target = normalize(coords);
+
+    let variants = [];
+    let shape = baseShape;
+
+    for(let i=0;i<4;i++){
+        variants.push(normalize(shape));
+        variants.push(normalize(mirror(shape)));
+        shape = rotate(shape);
+    }
+
+    return variants.some(v => sameShape(v,target));
+}
+function est_sacrifice_ouverture(cases){
+     if(cases.length !== 2) return false;
+
+    // forme de base
+    let baseShape = [
+        [0,0],
+        [1,1]
     ];
 
     function getCoords(td){
