@@ -119,6 +119,10 @@
         function genererGrille() {
             nb_figure_j1 = 0;
             nb_figure_j2 = 0;
+            document.getElementById('coups-j1').innerHTML = "1";
+            document.getElementById('coups-j2').innerHTML = "0";
+            j1=1;
+            j2=0;
             document.getElementById('grille').innerHTML = "";
             const ligne = document.getElementById('ligne').value;
             const colonne = document.getElementById('colonne').value;
@@ -566,7 +570,7 @@ function est_transformation(cases){
     return variants.some(v => sameShape(v,target));
 }
 function transformation(td, joueur){
-    if (!(td.textContent === joueur)) {
+    if (!(td.textContent === joueur)&&!(td.textContent === " ")) {
     
     td.textContent = joueur;
     td.classList.remove("utilisé");
