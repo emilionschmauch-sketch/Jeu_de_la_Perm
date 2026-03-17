@@ -566,59 +566,98 @@ function est_transformation(cases){
     return variants.some(v => sameShape(v,target));
 }
 function transformation(td, joueur){
+    if (!(td.textContent === joueur)) {
+    
     td.textContent = joueur;
     td.classList.remove("utilisé");
     setTimeout(() => {
         td.classList.remove("selectionner");
     }, 1);
+    if (est_victoire(skin_j1)) {
+                    setTimeout(() => {
+                            alert("Le joueur "+skin_j1+" a gagné !");
+                        }, 100);
+                    }
+    if (est_victoire(skin_j2)) {
+                    setTimeout(() => {
+                            alert("Le joueur "+skin_j2+" a gagné !");
+                        }, 100);
+                    }
+                for (let td of document.querySelectorAll('td')){
+        td.removeEventListener('click', transformationClick);
+    }
+                }         
+                else {
+                    alert("Vous devez sélectionner un point de votre adversaire pour la transformation");
+                }
 }
 
 function transformationClick(e){
     transformation(e.currentTarget, joueurTransformation);
-
-    for (let td of document.querySelectorAll('td')){
-        td.removeEventListener('click', transformationClick);
-    }
 }
 function reservationClick(e){
     
-    if (e.currentTarget.textContent === " " && e.currentTarget.style.backgroundColor !== "purple" && e.currentTarget.style.backgroundColor !== "gold"){
+    if (e.currentTarget.textContent === " "){
         if (joueurReservation === skin_j2){
-            e.currentTarget.style.backgroundColor = "purple";
-        }
-        else if (joueurReservation === skin_j1){
-           e.currentTarget.style.backgroundColor = "gold";
-        }
-        if (reservation < nb_resa){
+            if (e.currentTarget.style.backgroundColor !== "purple") {
+                if (e.currentTarget.style.backgroundColor !== "gold") {
+                e.currentTarget.style.backgroundColor = "purple";
+                if (reservation < nb_resa){
             reservation++;
-            if (joueurReservation === skin_j1){
-            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
-            }
-            else if (joueurReservation === skin_j2){
-                document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
-            }
-        }
-        else {
+            document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
+            
+                }
+                 else {
            for (let td of document.querySelectorAll('td')){
             td.removeEventListener('click', reservationClick);
             td.addEventListener('click', jouerClick);
         }
         reservation=1;
-        if (joueurReservation === skin_j1){
-            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
-            setTimeout(() => {
-                document.getElementById("reservations-j1").style.display = 'none';
-                document.getElementById("t_reservations-j1").style.display = 'none';
-            }, 500);
-        }
-        else if (joueurReservation === skin_j2){
             document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
             setTimeout(() => {
                 document.getElementById("reservations-j2").style.display = 'none';
                 document.getElementById("t_reservations-j2").style.display = 'none';
             }, 500);
+        
+    }
+            }
+            else {
+                e.currentTarget.style.backgroundColor = "";
+            }
         }
     }
+        else if (joueurReservation === skin_j1){
+            if (e.currentTarget.style.backgroundColor !== "gold") {
+                if (e.currentTarget.style.backgroundColor !== "purple") {
+                e.currentTarget.style.backgroundColor = "gold";
+                if (reservation < nb_resa){
+            reservation++;
+            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
+            
+                }
+                 else {
+           for (let td of document.querySelectorAll('td')){
+            td.removeEventListener('click', reservationClick);
+            td.addEventListener('click', jouerClick);
+        }
+        reservation=1;
+            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
+            setTimeout(() => {
+                document.getElementById("reservations-j1").style.display = 'none';
+                document.getElementById("t_reservations-j1").style.display = 'none';
+            }, 500);
+        
+    }
+            }
+            else {
+                e.currentTarget.style.backgroundColor = "";
+            }
+        }
+        
+           
+       
+    }
+
     }
 }
 function destructionClick(e){
