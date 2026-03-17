@@ -627,6 +627,24 @@ function reservationClick(e){
             }
             else {
                 e.currentTarget.style.backgroundColor = "";
+                if (reservation < nb_resa){
+            reservation++;
+            document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
+            
+                }
+                 else {
+           for (let td of document.querySelectorAll('td')){
+            td.removeEventListener('click', reservationClick);
+            td.addEventListener('click', jouerClick);
+        }
+        reservation=1;
+            document.getElementById('reservations-j2').textContent = parseInt(document.getElementById('reservations-j2').textContent) - 1;
+            setTimeout(() => {
+                document.getElementById("reservations-j2").style.display = 'none';
+                document.getElementById("t_reservations-j2").style.display = 'none';
+            }, 500);
+        
+    }
             }
         }
     }
@@ -655,6 +673,24 @@ function reservationClick(e){
             }
             else {
                 e.currentTarget.style.backgroundColor = "";
+                if (reservation < nb_resa){
+            reservation++;
+            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
+            
+                }
+                 else {
+           for (let td of document.querySelectorAll('td')){
+            td.removeEventListener('click', reservationClick);
+            td.addEventListener('click', jouerClick);
+        }
+        reservation=1;
+            document.getElementById('reservations-j1').textContent = parseInt(document.getElementById('reservations-j1').textContent) - 1;
+            setTimeout(() => {
+                document.getElementById("reservations-j1").style.display = 'none';
+                document.getElementById("t_reservations-j1").style.display = 'none';
+            }, 500);
+        
+    }
             }
         }
         
