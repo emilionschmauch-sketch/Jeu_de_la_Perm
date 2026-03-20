@@ -488,12 +488,14 @@ for (let td of document.querySelectorAll('td')) {
         }
 
 function AfficherAide() {
+    if (document.getElementById('aide-mémoire').style.display === 'none') {
     const aide = document.getElementById('aide-mémoire');
         aide.style.display = 'block';
         setTimeout(() => {
             document.addEventListener('click', cacherAide);
         }, 100);
     }
+}
 function cacherAide(){
     const aide = document.getElementById('aide-mémoire');
     aide.style.display = 'none';
