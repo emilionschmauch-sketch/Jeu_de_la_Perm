@@ -81,7 +81,8 @@
     </select>
     <button id="deselectionner" onclick="deSelectionner()">Désélectionner</button>
     <button id="erreur" onclick="document.querySelectorAll('td').forEach(td => { if (td.classList.contains('selectionner')) { td.textContent=' '; } });">Retirer des points</button>
-    </div>
+    <button id="aide" onclick="AfficherAide()">Aide-mémoire</button>    
+</div>
     <div class="items">
         <input style="height:50px; width:50px; background: none; border: none; font-size: 50px; font-weight: bold;" value="X" id="skin_j2" >
         <p style="font-size: 30px;">Coups restants :</p>
@@ -90,6 +91,7 @@
         <p id="reservations-j2"style="font-size: 40px; display:none">0</p>
     </div>
 </div>
+<img id="aide-mémoire" src="aide-memoire.png" alt="Aide-mémoire" style="width: 100%; max-width: 600px; height: auto; position :absolute; top: 100px; left: 50%; transform: translateX(-50%); display: none;">
     <script>
         let j1=1;
         let j2=0;
@@ -484,6 +486,15 @@ for (let td of document.querySelectorAll('td')) {
             const col = td.cellIndex;
             return { row, col };
         }
+
+function AfficherAide() {
+    const aide = document.getElementById('aide-mémoire');
+    if (aide.style.display === 'none') {
+        aide.style.display = 'block';
+    } else {
+        aide.style.display = 'none';
+    }
+}
 
         function estAngle(cases){
     if(cases.length !== 3) return false;
