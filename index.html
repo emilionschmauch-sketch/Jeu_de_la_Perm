@@ -407,6 +407,7 @@ for (let td of document.querySelectorAll('td')) {
                 if (est_destruction(Array.from(cases))){
                     figure_realise(Array.from(cases), firstContent);
                     destruction=0;
+                    ouverture=0;
                     for (let td of document.querySelectorAll('td')) {
                     td.removeEventListener('click', jouerClick);
                 }
