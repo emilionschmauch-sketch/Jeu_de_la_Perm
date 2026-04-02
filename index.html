@@ -615,6 +615,10 @@ function transformation(td, joueur){
                 for (let td of document.querySelectorAll('td')){
         td.removeEventListener('click', transformationClick);
     }
+        if (est_victoire(skin_j1) || est_victoire(skin_j2)) {
+        for (let td of document.querySelectorAll('td')) {
+                    td.removeEventListener('click', jouerClick);
+                }
                 }         
                 else {
                     alert("Vous devez sélectionner un point de votre adversaire pour la transformation");
