@@ -157,6 +157,9 @@
                     droit_1pfigure_j1=true;
                     j1++;
                     if (est_victoire(skin_j2)) {
+                        for (let td of document.querySelectorAll('td')) {
+                    td.removeEventListener('click', jouerClick);
+                }
                     setTimeout(() => {
                             alert("Le joueur "+skin_j2+" a gagné !");
                         }, 100);
@@ -181,6 +184,9 @@
                     droit_1pfigure_j2=true;
                     j2++;
                     if (est_victoire(skin_j1)) {
+                        for (let td of document.querySelectorAll('td')) {
+                    td.removeEventListener('click', jouerClick);
+                }
                         setTimeout(() => {
                             alert("Le joueur " + skin_j1 + " a gagné !");
                         }, 100);
